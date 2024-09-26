@@ -22,7 +22,8 @@ class DynamixelRobotConfig:
     This will be different for each arm design. Refernce the examples below for the correct signs for your robot.
     """
 
-    gripper_config: Tuple[int, int, int]
+    # gripper_config: Tuple[int, int, int]
+    gripper_config: Optional[Tuple[int, int, int]] = None
     """The gripper config of GELLO. This is a tuple of (gripper_joint_id, degrees in open_position, degrees in closed_position)."""
 
     def __post_init__(self):

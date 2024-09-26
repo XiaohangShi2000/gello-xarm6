@@ -12,7 +12,7 @@ class Args:
     robot: str = "xarm"
     robot_port: int = 6001
     hostname: str = "127.0.0.1"
-    robot_ip: str = "192.168.1.241"
+    robot_ip: str = "192.168.1.1"
 
 
 def launch_robot_server(args: Args):
@@ -47,7 +47,7 @@ def launch_robot_server(args: Args):
         MENAGERIE_ROOT: Path = (
             Path(__file__).parent.parent / "third_party" / "mujoco_menagerie"
         )
-        xml = MENAGERIE_ROOT / "ufactory_xarm7" / "xarm7.xml"
+        xml = MENAGERIE_ROOT / "ufactory_xarm6" / "xarm6.xml"
         gripper_xml = None
         server = MujocoRobotServer(
             xml_path=xml, gripper_xml_path=gripper_xml, port=port, host=args.hostname
