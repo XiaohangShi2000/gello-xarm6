@@ -54,35 +54,35 @@ class RobotState:
     x: float
     y: float
     z: float
-    gripper: float
+    # gripper: float
     j1: float
     j2: float
     j3: float
     j4: float
     j5: float
     j6: float
-    j7: float
+    # j7: float
     aa: np.ndarray
 
     @staticmethod
     def from_robot(
         cartesian: np.ndarray,
         joints: np.ndarray,
-        gripper: float,
+        # gripper: float,
         aa: np.ndarray,
     ) -> "RobotState":
         return RobotState(
             cartesian[0],
             cartesian[1],
             cartesian[2],
-            gripper,
+            # gripper,
             joints[0],
             joints[1],
             joints[2],
             joints[3],
             joints[4],
             joints[5],
-            joints[6],
+            # joints[6],
             aa,
         )
 
@@ -93,10 +93,10 @@ class RobotState:
         return _quat_from_aa(self.aa)
 
     def joints(self) -> np.ndarray:
-        return np.array([self.j1, self.j2, self.j3, self.j4, self.j5, self.j6, self.j7])
+        return np.array([self.j1, self.j2, self.j3, self.j4, self.j5, self.j6])
 
     def gripper_pos(self) -> float:
-        return self.gripper
+        return 0
 
 
 class Rate:
@@ -132,10 +132,10 @@ class XArmRobot(Robot):
         return all_dofs
 
     def command_joint_state(self, joint_state: np.ndarray) -> None:
-        if len(joint_state) == 7:
+        if len(joint_state) == 6:
             self.set_command(joint_state, None)
-        elif len(joint_state) == 8:
-            self.set_command(joint_state[:7], joint_state[7])
+        elif len(joint_state) == 7:
+            self.set_command(joint_state[:6], joint_state[6])
         else:
             raise ValueError(
                 f"Invalid joint state: {joint_state}, len={len(joint_state)}"
@@ -151,7 +151,7 @@ class XArmRobot(Robot):
 
     def __init__(
         self,
-        ip: str = "192.168.1.226",
+        ip: str = "10.18.18.101",
         real: bool = True,
         control_frequency: float = 50.0,
         max_delta: float = DEFAULT_MAX_DELTA,
@@ -168,14 +168,14 @@ class XArmRobot(Robot):
 
         self._control_frequency = control_frequency
         self._clear_error_states()
-        self._set_gripper_position(self.GRIPPER_OPEN)
+        # self._set_gripper_position(self.GRIPPER_OPEN)
 
         self.last_state_lock = threading.Lock()
         self.target_command_lock = threading.Lock()
         self.last_state = self._update_last_state()
         self.target_command = {
             "joints": self.last_state.joints(),
-            "gripper": 0,
+            "gripper": None,
         }
         self.running = True
         self.command_thread = None
@@ -207,12 +207,12 @@ class XArmRobot(Robot):
         time.sleep(1)
         self.robot.set_state(state=0)
         time.sleep(1)
-        self.robot.set_gripper_enable(True)
-        time.sleep(1)
-        self.robot.set_gripper_mode(0)
-        time.sleep(1)
-        self.robot.set_gripper_speed(3000)
-        time.sleep(1)
+        # self.robot.set_gripper_enable(True)
+        # time.sleep(1)
+        # self.robot.set_gripper_mode(0)
+        # time.sleep(1)
+        # self.robot.set_gripper_speed(3000)
+        # time.sleep(1)
 
     def _get_gripper_pos(self) -> float:
         if self.robot is None:
@@ -290,9 +290,9 @@ class XArmRobot(Robot):
     def _update_last_state(self) -> RobotState:
         with self.last_state_lock:
             if self.robot is None:
-                return RobotState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, np.zeros(3))
+                return RobotState(0, 0, 0, 0, 0, 0, 0, 0, 0, np.zeros(3))
 
-            gripper_pos = self._get_gripper_pos()
+            # gripper_pos = self._get_gripper_pos()
 
             code, servo_angle = self.robot.get_servo_angle(is_radian=True)
             while code != 0:
@@ -313,7 +313,7 @@ class XArmRobot(Robot):
             return RobotState.from_robot(
                 cart_pos,
                 servo_angle,
-                gripper_pos,
+                # gripper_pos,
                 aa,
             )
 
@@ -341,7 +341,7 @@ class XArmRobot(Robot):
 
 
 def main():
-    ip = "192.168.1.226"
+    ip = "10.18.18.101"
     robot = XArmRobot(ip)
     import time
 

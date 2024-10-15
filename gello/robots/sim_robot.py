@@ -155,6 +155,10 @@ class MujocoRobotServer:
 
         self._model = mujoco.MjModel.from_xml_string(xml_string, assets)
         self._data = mujoco.MjData(self._model)
+        self._data.qpos[2] = -1.57
+        self._data.qpos[4] = 1.57
+        # self._data.ctrl[2] = -1.57
+        # self._data.ctrl[4] = 1.57
 
         self._num_joints = self._model.nu
 

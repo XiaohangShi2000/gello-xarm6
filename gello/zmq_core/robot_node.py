@@ -7,7 +7,7 @@ import zmq
 
 from gello.robots.robot import Robot
 
-DEFAULT_ROBOT_PORT = 6000
+DEFAULT_ROBOT_PORT = 10001
 
 
 class ZMQServerRobot:
@@ -83,7 +83,8 @@ class ZMQClientRobot(Robot):
         send_message = pickle.dumps(request)
         self._socket.send(send_message)
         result = pickle.loads(self._socket.recv())
-        return result
+        print(result)
+        return 6
 
     def get_joint_state(self) -> np.ndarray:
         """Get the current state of the leader robot.
@@ -122,4 +123,5 @@ class ZMQClientRobot(Robot):
         send_message = pickle.dumps(request)
         self._socket.send(send_message)
         result = pickle.loads(self._socket.recv())
+        # print(result)
         return result
